@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="apple-touch-icon"
+      sizes="76x76"
+      href="./static/img/apple-icon.png"
+    />
+    <link rel="icon" type="image/png" href="/static/img/favicon.png" />
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no"
+      name="viewport"
+    />
+    <title>EMSC-DEMO-POC</title>
+    <link rel="stylesheet" href="/static/css/demo-emsc-poc.css" />
+  </head>
+  <body>
+    <div class="status-container">
+      <div class="status-body" style="padding: 1em">
+        <p id="status-content">Status: Not Sign In</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="container">
+        <div class="card">
+          <div class="part part1">
+            <div class="content">
+              <!-- <img src="https://github.com/Jhonierpc/WebDevelopment/blob/master/CSS%20Card%20Hover%20Effects/img/design_128.png?raw=true"> -->
+              <h3>Authenticate Me</h3>
+            </div>
+          </div>
+          <div class="part part2">
+            <div class="content">
+              <p id="authorize-status">Authorize Status: <br />Not Authorize</p>
+
+              <span
+                ><a href="#" id="authenticate-link" data-link
+                  >Authenticate Now</a
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="part part1">
+            <div class="content">
+              <!-- <img src="https://github.com/Jhonierpc/WebDevelopment/blob/master/CSS%20Card%20Hover%20Effects/img/code_128.png?raw=true"> -->
+              <h3>Authenticate<br />API Gateway</h3>
+            </div>
+          </div>
+          <div class="part part2">
+            <div class="content">
+              <p id="authorize-status-api">
+                Authorize Status: <br />Not Authorize
+              </p>
+              <p id="authorize-content-api">No Content</p>
+              <span
+                ><a
+                  href="javascript:void(0);"
+                  onclick="getAuthApi()"
+                  id="auth-api"
+                  >Start</a
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="part part1">
+            <div class="content">
+              <!-- <img src="https://github.com/Jhonierpc/WebDevelopment/blob/master/CSS%20Card%20Hover%20Effects/img/launch_128.png?raw=true"> -->
+              <h3>Non-Authenticate<br />API Gateway</h3>
+            </div>
+          </div>
+          <div class="part part2">
+            <div class="content">
+              <p id="non-auth-api">No Content</p>
+              <span
+                ><a href="javascript:void(0);" onclick="getNotAuthApi()"
+                  >Start</a
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="part part1">
+            <div class="content">
+              <!-- <img src="https://github.com/Jhonierpc/WebDevelopment/blob/master/CSS%20Card%20Hover%20Effects/img/launch_128.png?raw=true"> -->
+              <h3>Logout</h3>
+            </div>
+          </div>
+          <div class="part part2">
+            <div class="content">
+              <p>Logout from app</p>
+              <span
+                ><a href="javascript:void(0);" onclick="logout()"
+                  >Logout</a
+                ></span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/static/bundle.js" type="module"></script>
+    <script>
+      $(document).ready(function () {
+        var token = localStorage.getItem("token");
+        console.log("token", token);
+        if (token != "null") {
+          console.log("token available :", token);
+          const authorizeStatusElement =
+            document.getElementById("authorize-status");
+          authorizeStatusElement.textContent = "Authorize Status: Authorized";
+          const authorizeStatusApiElement = document.getElementById(
+            "authorize-status-api"
+          );
+          authorizeStatusApiElement.textContent =
+            "Authorize Status: Authorized";
+          document.getElementById("auth-api").style.display = "block";
+          document.getElementById("authenticate-link").style.display = "none";
+          document.getElementById("status-content").textContent =
+            "Status: Sign in";
+        } else {
+          console.log("token not found");
+          const authorizeStatusElement =
+            document.getElementById("authorize-status");
+          authorizeStatusElement.textContent =
+            "Authorize Status: Not Authorized";
+          const authorizeStatusApiElement = document.getElementById(
+            "authorize-status-api"
+          );
+          authorizeStatusApiElement.textContent =
+            "Authorize Status: Not Authorized";
+          document.getElementById("auth-api").style.display = "none";
+        }
+      });
+
+      function logout() {
+        console.log("initiate log out");
+        localStorage.setItem("token", null);
+        location.reload();
+      }
+      function getAuthApi() {
+        console.log("Checking Api with session");
+        const token = localStorage.getItem("token");
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", token);
+        $.ajax({
+          type: "GET",
+          cors: true,
+          url: "http://localhost:8080/",
+          headers: {
+            Authorization: "Bearer " + token, // Add bearer token in the Authorization header
+          },
+          async: true,
+          success: function (data) {
+            console.log("result:", data);
+            document.getElementById("authorize-content-api").textContent = data;
+          },
+        });
+      }
+      function getNotAuthApi() {
+        console.log("initiate");
+        $.ajax({
+          type: "GET",
+          cors: true,
+          url: "http://localhost:8080/not",
+          success: function (data) {
+            console.log("result:", data);
+            document.getElementById("non-auth-api").textContent = data;
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

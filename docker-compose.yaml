@@ -1,0 +1,15 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - '.:/app'
+    environment:
+      - SECRET=b4p8Uhwx9HNo_KIGSrYKp2qdyy9_BmeF31HSsInBS3ktQq7JWGicFheh
+      - AUTH_USER=client
+      - AUTH_PASSWORD=123456789
+      - AUTH_APP_ID=a92d900d-d460-4baa-b019-149894547bda
